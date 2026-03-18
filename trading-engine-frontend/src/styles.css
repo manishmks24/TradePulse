@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-dark: #0f111a;
+  --bg-panel: #1a1d27;
+  --bg-panel-light: #24283b;
+  --text-main: #a9b1d6;
+  --text-light: #c0caf5;
+  --text-header: #ffffff;
+  --accent-blue: #7aa2f7;
+  --accent-green: #9ece6a;
+  --accent-red: #f7768e;
+  --accent-yellow: #e0af68;
+  --border-color: #292e42;
+  --font-main: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  height: 100vh;
+  overflow: hidden;
+}
+
+h1, h2, h3, h4 {
+  color: var(--text-header);
+  font-weight: 600;
+}
+
+/* Glassmorphism Panels */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Specific styles for pro-trading terminal */
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  height: 100vh;
+  gap: 16px;
+  padding: 16px;
+}
+
+.ticker-tape {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+.ticker-item {
+  background: var(--bg-panel-light);
+  padding: 10px 20px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  align-items: center;
+}
+.ticker-symbol {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: var(--text-light);
+}
+.ticker-price {
+  font-family: var(--font-mono);
+  font-size: 1.2em;
+}
+.price-up { color: var(--accent-green); }
+.price-down { color: var(--accent-red); }
+
+/* Form Styles */
+.trade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+input, select {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  padding: 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus {
+  border-color: var(--accent-blue);
+}
+.btn {
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-buy { background: var(--accent-green); color: #000; }
+.btn-sell { background: var(--accent-red); color: #000; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+th {
+  color: var(--text-light);
+  font-family: var(--font-main);
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+
+/* Glass UI Utilities */
+.glass-card {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}

@@ -1,0 +1,115 @@
+<div class="terminal-grid">
+  
+  <!-- Left Column: Market Data & Trades -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    
+    <!-- Live Ticker Panel -->
+    <div class="panel" style="flex: 0 0 auto;">
+      <h2 style="margin-bottom: 10px;">Live Market</h2>
+      <div class="ticker-tape">
+        <div *ngFor="let symbol of getMarketDataKeys()" class="ticker-item">
+          <span class="ticker-symbol">{{symbol}}</span>
+          <span class="ticker-price" 
+                [ngClass]="{'price-up': marketData[symbol].trend === 'up', 'price-down': marketData[symbol].trend === 'down'}">
+            ${{ marketData[symbol].price | number:'1.2-2' }}
+          </span>
+        </div>
+        <div *ngIf="getMarketDataKeys().length === 0" style="color: var(--text-main);">
+          Waiting for live data feed...
+        </div>
+      </div>
+    </div>
+
+    <!-- Trade History / Execution Panel -->
+    <div class="panel" style="flex: 1 1 auto; overflow-y: auto;">
+      <h2 style="margin-bottom: 10px;">Your Recent Executions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Stock</th>
+            <th>Exec Price</th>
+            <th>Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trade of recentTrades">
+            <td>{{ trade.timestamp | date:'HH:mm:ss.SSS' }}</td>
+            <td style="font-weight: bold; color: var(--text-light);">{{ trade.stock.symbol }}</td>
+            <td class="price-up">${{ trade.executionPrice | number:'1.2-2' }}</td>
+            <td>{{ trade.quantity }}</td>
+          </tr>
+          <tr *ngIf="recentTrades.length === 0">
+            <td colspan="4" style="text-align: center; color: var(--border-color);">No trades executed yet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Right Column: Order Form & Portfolio -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    
+    <!-- Order Placement Panel -->
+    <div class="panel" style="flex: 0 0 auto;">
+      <h2 style="margin-bottom: 15px; color: var(--accent-blue);">Order Entry</h2>
+      <form class="trade-form" (ngSubmit)="placeOrder()">
+        
+        <div class="form-group">
+          <label>Stock</label>
+          <select [(ngModel)]="orderSymbol" name="stock">
+            <option *ngFor="let s of availableStocks" [value]="s.id">{{s.symbol}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Type</label>
+          <select [(ngModel)]="orderType" name="type">
+            <option value="BID">Buy (Bid)</option>
+            <option value="ASK">Sell (Ask)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Limit Price ($)</label>
+          <input type="number" step="0.01" [(ngModel)]="orderPrice" name="price" required>
+        </div>
+
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" [(ngModel)]="orderQuantity" name="quantity" required>
+        </div>
+
+        <button type="submit" class="btn" [ngClass]="orderType === 'BID' ? 'btn-buy' : 'btn-sell'">
+          {{ orderType === 'BID' ? 'Place Buy Order' : 'Place Sell Order' }}
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Portfolio Panel -->
+    <div class="panel" style="flex: 1 1 auto; overflow-y: auto;">
+      <h2 style="margin-bottom: 15px;">Portfolio</h2>
+      
+      <div style="margin-bottom: 15px; font-size: 1.1em;">
+        Available Cash: <span style="font-family: var(--font-mono); font-weight: bold; color: var(--accent-green);">${{ cashBalance | number:'1.2-2' }}</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Shares</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of portfolio">
+            <td style="font-weight: bold;">{{ item.symbol }}</td>
+            <td style="font-family: var(--font-mono);">{{ item.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
