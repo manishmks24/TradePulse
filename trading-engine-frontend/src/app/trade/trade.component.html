@@ -87,6 +87,50 @@
       </form>
     </div>
 
+    <!-- Live Order Book Panel -->
+    <div class="panel" style="flex: 1 1 auto;">
+      <h2 style="margin-bottom: 15px;">Order Book <span style="color: var(--text-light); font-size: 0.8em; font-weight: normal;">({{ getSelectedSymbol() }})</span></h2>
+      <div style="display: flex; gap: 20px;">
+        <!-- Bids -->
+        <div style="flex: 1;">
+          <h3 style="color: var(--accent-green); font-size: 0.9em; margin-bottom: 10px;">BIDS (Buy)</h3>
+          <table>
+            <thead>
+              <tr><th>Qty</th><th>Price</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let bid of orderBooks[getSelectedSymbol()]?.bids">
+                <td style="font-family: var(--font-mono);">{{ bid.quantity }}</td>
+                <td style="font-family: var(--font-mono); color: var(--accent-green);">${{ bid.price | number:'1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="!orderBooks[getSelectedSymbol()]?.bids?.length">
+                <td colspan="2" style="text-align: center; color: var(--border-color);">No Bids</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Asks -->
+        <div style="flex: 1;">
+          <h3 style="color: var(--accent-red); font-size: 0.9em; margin-bottom: 10px;">ASKS (Sell)</h3>
+          <table>
+            <thead>
+              <tr><th>Price</th><th>Qty</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ask of orderBooks[getSelectedSymbol()]?.asks">
+                <td style="font-family: var(--font-mono); color: var(--accent-red);">${{ ask.price | number:'1.2-2' }}</td>
+                <td style="font-family: var(--font-mono); text-align: right;">{{ ask.quantity }}</td>
+              </tr>
+              <tr *ngIf="!orderBooks[getSelectedSymbol()]?.asks?.length">
+                <td colspan="2" style="text-align: center; color: var(--border-color);">No Asks</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Portfolio Panel -->
     <div class="panel" style="flex: 1 1 auto; overflow-y: auto;">
       <h2 style="margin-bottom: 15px;">Portfolio</h2>

@@ -35,6 +35,17 @@ export interface MarketTick {
   trend?: 'up' | 'down' | 'unchanged';
 }
 
+export interface OrderBookEntry {
+  price: number;
+  quantity: number;
+}
+
+export interface OrderBookDto {
+  symbol: string;
+  bids: OrderBookEntry[];
+  asks: OrderBookEntry[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,6 +54,7 @@ export class TradingService {
   private stompClient?: Client;
   private marketTickSubject = new Subject<MarketTick>();
   private tradeSubject = new Subject<any>();
+  private orderBookSubject = new Subject<OrderBookDto>();
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
@@ -66,6 +78,12 @@ export class TradingService {
               this.marketTickSubject.next(JSON.parse(message.body));
             }
           });
+          
+          this.stompClient?.subscribe(`/topic/orderbook/${symbol}`, (message: Message) => {
+            if (message.body) {
+              this.orderBookSubject.next(JSON.parse(message.body));
+            }
+          });
         });
 
         // Subscribe to user personal trades (Mocking userId 1 for Alice)
@@ -87,6 +105,10 @@ export class TradingService {
 
   getMarketTicks(): Observable<MarketTick> {
     return this.marketTickSubject.asObservable();
+  }
+
+  getOrderBookUpdates(): Observable<OrderBookDto> {
+    return this.orderBookSubject.asObservable();
   }
 
   getTradeUpdates(): Observable<any> {

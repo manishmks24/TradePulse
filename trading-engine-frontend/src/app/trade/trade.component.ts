@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { TradingService, MarketTick, Portfolio, TradeOrder } from '../services/trading.service';
+import { TradingService, MarketTick, Portfolio, TradeOrder, OrderBookDto } from '../services/trading.service';
 
 @Component({
   selector: 'app-trade',
@@ -16,6 +16,7 @@ export class TradeComponent implements OnInit, OnDestroy {
   portfolio: Portfolio[] = [];
   cashBalance: number = 0;
   recentTrades: any[] = [];
+  orderBooks: { [symbol: string]: OrderBookDto } = {};
   
   // For the sake of demo, hardcode user ID to Alice (1)
   userId = 1;
@@ -34,6 +35,7 @@ export class TradeComponent implements OnInit, OnDestroy {
 
   private tickSub!: Subscription;
   private tradeSub!: Subscription;
+  private orderBookSub!: Subscription;
 
   constructor(private tradingService: TradingService, private cdr: ChangeDetectorRef) {}
 
@@ -56,11 +58,21 @@ export class TradeComponent implements OnInit, OnDestroy {
       // Update portfolio on trade execution
       this.fetchPortfolio();
     });
+
+    this.orderBookSub = this.tradingService.getOrderBookUpdates().subscribe(book => {
+      this.orderBooks[book.symbol] = book;
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnDestroy() {
     this.tickSub?.unsubscribe();
     this.tradeSub?.unsubscribe();
+    this.orderBookSub?.unsubscribe();
+  }
+
+  getSelectedSymbol(): string {
+    return this.availableStocks.find(s => s.id == this.orderSymbol)?.symbol || 'AAPL';
   }
 
   getMarketDataKeys() {

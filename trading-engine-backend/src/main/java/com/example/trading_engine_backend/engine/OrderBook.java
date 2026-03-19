@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 public class OrderBook {
 
     private final Long stockId;
+    public Long getStockId() { return stockId; }
 
     // Highest price first, earliest timestamp first
     private final PriorityQueue<TradeOrder> bids;
@@ -43,5 +44,18 @@ public class OrderBook {
     public synchronized void removeOrder(TradeOrder order) {
         bids.remove(order);
         asks.remove(order);
+    }
+
+    public synchronized com.example.trading_engine_backend.payload.OrderBookDto getSnapshot(String symbol) {
+        // Create aggregate snapshots up to 10 depths
+        java.util.List<com.example.trading_engine_backend.payload.OrderBookEntry> bidList = bids.stream()
+                .map(o -> new com.example.trading_engine_backend.payload.OrderBookEntry(o.getPrice(), o.getRemainingQuantity()))
+                .limit(10).toList();
+        
+        java.util.List<com.example.trading_engine_backend.payload.OrderBookEntry> askList = asks.stream()
+                .map(o -> new com.example.trading_engine_backend.payload.OrderBookEntry(o.getPrice(), o.getRemainingQuantity()))
+                .limit(10).toList();
+                
+        return new com.example.trading_engine_backend.payload.OrderBookDto(symbol, bidList, askList);
     }
 }
