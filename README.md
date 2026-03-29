@@ -108,5 +108,5 @@ Contributions are welcome! If you're interested in algorithmic trading, high-fre
 ---
 
 <div align="center">
-  Made with ❤️ by the TradePulse Team.
+  Made with ❤️ by Manish.
 </div>
