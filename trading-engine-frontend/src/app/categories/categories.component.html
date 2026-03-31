@@ -1,0 +1,19 @@
+<div class="categories-container">
+  <div class="header">
+    <h1 class="title">Explore Markets</h1>
+    <p class="subtitle">Select a category to start trading with TradePulse.</p>
+  </div>
+
+  <div class="grid">
+    <div *ngFor="let cat of categories" class="card" (click)="selectCategory(cat.id)">
+      <div class="icon">{{ cat.icon }}</div>
+      <h2 class="card-title">{{ cat.name }}</h2>
+      <p class="card-desc">{{ cat.description }}</p>
+      
+      <div class="card-footer">
+        <span class="btn-text">Trade Now</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+  </div>
+</div>

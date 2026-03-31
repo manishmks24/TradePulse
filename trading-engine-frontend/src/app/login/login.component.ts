@@ -18,8 +18,8 @@ export class LoginComponent {
 
   onLogin() {
     if (this.username && this.password) {
-      // Setup fake auth token or just redirect to trade dashboard
-      this.router.navigate(['/trade']);
+      // Setup fake auth token or just redirect to categories dashboard
+      this.router.navigate(['/categories']);
     } else {
       alert("Please enter both username and password");
     }
