@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findBySymbol(String symbol);
+    java.util.List<Stock> findByCategory(String category);
 }

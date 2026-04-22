@@ -41,37 +41,9 @@ public class MarketDataService {
         }
     }
 
-    // Run every 1 second
-    @Scheduled(fixedRate = 1000)
+    // Run every 1 second (DISABLED for Live External Agent)
+    // @Scheduled(fixedRate = 1000)
     public void generateMarketTicks() {
-        if (stocks == null || stocks.isEmpty()) {
-            stocks = stockRepository.findAll();
-            if (stocks.isEmpty()) return;
-            
-            // Re-initialize base prices if just loaded
-            for (Stock stock : stocks) {
-                if (!currentPrices.containsKey(stock.getSymbol())) {
-                    currentPrices.put(stock.getSymbol(), BigDecimal.valueOf(100 + random.nextInt(100)));
-                }
-            }
-        }
-
-        for (Stock stock : stocks) {
-            BigDecimal currentPrice = currentPrices.get(stock.getSymbol());
-            // Random walk: -1% to +1% change
-            double changePercent = (random.nextDouble() * 2 - 1) * 0.01;
-            BigDecimal change = currentPrice.multiply(BigDecimal.valueOf(changePercent));
-            BigDecimal newPrice = currentPrice.add(change).setScale(2, RoundingMode.HALF_UP);
-            
-            // Prevent price from going to zero
-            if (newPrice.compareTo(BigDecimal.ONE) < 0) {
-                newPrice = BigDecimal.ONE;
-            }
-            
-            currentPrices.put(stock.getSymbol(), newPrice);
-
-            MarketTick tick = new MarketTick(stock.getSymbol(), newPrice, Instant.now());
-            messagingTemplate.convertAndSend("/topic/market/" + stock.getSymbol(), tick);
-        }
+        // Simulation disabled. Data now ingested via MarketDataIngestionController.
     }
 }

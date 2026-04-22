@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TradingService, MarketTick, Portfolio, TradeOrder, OrderBookDto } from '../services/trading.service';
@@ -27,19 +28,34 @@ export class TradeComponent implements OnInit, OnDestroy {
   orderPrice: number = 0;
   orderQuantity: number = 0;
 
-  availableStocks = [
-    { id: 1, symbol: 'AAPL' },
-    { id: 2, symbol: 'GOOGL' },
-    { id: 3, symbol: 'TSLA' }
-  ];
+  currentCategory: string = 'stocks';
+
+  allStocks: any[] = [];
+
+  availableStocks: any[] = [];
 
   private tickSub!: Subscription;
   private tradeSub!: Subscription;
   private orderBookSub!: Subscription;
 
-  constructor(private tradingService: TradingService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private tradingService: TradingService, 
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.currentCategory = params['category'] || 'stocks';
+      this.tradingService.getStocksByCategory(this.currentCategory).subscribe(stocks => {
+        this.availableStocks = stocks;
+        if (this.availableStocks.length > 0) {
+          this.orderSymbol = this.availableStocks[0].id;
+        }
+        this.cdr.detectChanges();
+      });
+    });
+
     this.fetchPortfolio();
 
     this.tickSub = this.tradingService.getMarketTicks().subscribe(tick => {

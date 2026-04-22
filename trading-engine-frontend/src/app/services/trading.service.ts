@@ -71,19 +71,25 @@ export class TradingService {
       this.stompClient.onConnect = (frame) => {
         console.log('Connected: ' + frame);
         
-        // Subscribe to all market data topics (AAP, GOOGL, TSLA)
-        ['AAPL', 'GOOGL', 'TSLA'].forEach(symbol => {
-          this.stompClient?.subscribe(`/topic/market/${symbol}`, (message: Message) => {
-            if (message.body) {
-              this.marketTickSubject.next(JSON.parse(message.body));
-            }
-          });
-          
-          this.stompClient?.subscribe(`/topic/orderbook/${symbol}`, (message: Message) => {
-            if (message.body) {
-              this.orderBookSubject.next(JSON.parse(message.body));
-            }
-          });
+        // Fetch all stocks to subscribe dynamically
+        this.http.get<Stock[]>(`${this.apiUrl}/stocks`).subscribe({
+          next: (stocks) => {
+             stocks.forEach(stock => {
+               const symbol = stock.symbol;
+               this.stompClient?.subscribe(`/topic/market/${symbol}`, (message: Message) => {
+                 if (message.body) {
+                   this.marketTickSubject.next(JSON.parse(message.body));
+                 }
+               });
+               
+               this.stompClient?.subscribe(`/topic/orderbook/${symbol}`, (message: Message) => {
+                 if (message.body) {
+                   this.orderBookSubject.next(JSON.parse(message.body));
+                 }
+               });
+             });
+          },
+          error: (err) => console.error("Could not fetch stocks for STOMP subscription", err)
         });
 
         // Subscribe to user personal trades (Mocking userId 1 for Alice)
@@ -113,6 +119,11 @@ export class TradingService {
 
   getTradeUpdates(): Observable<any> {
     return this.tradeSubject.asObservable();
+  }
+
+  getStocksByCategory(category: string): Observable<Stock[]> {
+    const params = category ? `?category=${category}` : '';
+    return this.http.get<Stock[]>(`${this.apiUrl}/stocks${params}`);
   }
 
   placeOrder(orderRequest: any): Observable<TradeOrder> {

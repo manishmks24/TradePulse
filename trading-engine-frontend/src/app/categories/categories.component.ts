@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
 })
 export class CategoriesComponent {
   categories = [
-    { id: 'stocks', name: 'Stocks', icon: '📈', description: 'Trade equities in real-time with our advanced matching engine.' },
+    { id: 'nifty-50', name: 'Nifty 50', icon: '🇮🇳', description: 'Trade the top 50 Indian companies by market capitalization.' },
+    { id: 'sensex', name: 'Sensex', icon: '📈', description: 'Invest in the top 30 established companies listed on the BSE.' },
+    { id: 'stocks', name: 'US Stocks', icon: '🌎', description: 'Trade equities in real-time with our advanced matching engine.' },
     { id: 'mutual-funds', name: 'Mutual Funds', icon: '🏦', description: 'Invest in diversified portfolios managed by experts.' },
     { id: 'etfs', name: 'ETFs', icon: '🛒', description: 'Trade baskets of securities like a single stock.' },
     { id: 'options', name: 'Options', icon: '🎯', description: 'Leverage your trades with advanced derivative contracts.' },

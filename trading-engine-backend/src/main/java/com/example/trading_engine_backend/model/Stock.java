@@ -22,4 +22,7 @@ public class Stock {
     @Column(nullable = false)
     private String companyName;
 
+    @Column(nullable = true)
+    private String category;
+
 }
